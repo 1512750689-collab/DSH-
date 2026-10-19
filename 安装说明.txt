@@ -1,0 +1,62 @@
+﻿================================================================
+  DSH 开屏动画插件（dsh-boot-anim）v2.0
+  给 DeepSeek Harness 桌面版加一段自定义开场动画 + 可视化设置面板
+================================================================
+
+【能做什么】
+  · 只播你自己的视频 / 图片；最初自带的三套动画已移除
+  · 第三层冷白数据闪：全片呼吸 + 片尾爆闪 + 光环 + 扫描线（颜色/强度/时长/呼吸/光环可调）
+  · 开屏结束后淡出，保留当前 DSH 皮肤层
+  · 换成你自己的视频或图片（弹窗选文件；微信那种 HEVC 视频会自动转成 H.264）
+  · 换成你自己的音乐（支持从副歌第几秒开始播、音量、播放长度、淡出）
+  · 落款文字、13 种书法字体、字号、颜色，全部在面板里调
+  · 播放时长完全由你决定（面板没有上限：填 900 秒也行；也可以让它"视频多长就播多长"）
+  · 不想等就按任意键 / 点击跳过
+
+【安装（三步）】
+  1. 先在托盘图标上右键 → 退出 DeepSeek Harness（只关窗口不算，必须完全退出）
+  2. 双击本文件夹里的「安装.bat」
+  3. 重新打开 DeepSeek Harness → 设置 → 开屏动画
+
+  安装脚本做的事：
+    · 把 dsh-boot-anim 文件夹复制到  %USERPROFILE%\.dsh\plugins\dsh-boot-anim
+    · 在 profile 的 node_modules 里建一个链接指向它
+    · 在 %USERPROFILE%\.dsh\profiles\desktop\package.json 里登记插件
+      （原文件会备份成 package.json.bak-boot-anim，随时可回退）
+
+  手动安装（脚本跑不了时）：
+    · 把 dsh-boot-anim 文件夹放到 %USERPROFILE%\.dsh\plugins\
+    · 用管理员命令行执行：
+        mklink /J "%USERPROFILE%\.dsh\profiles\desktop\node_modules\dsh-boot-anim" "%USERPROFILE%\.dsh\plugins\dsh-boot-anim"
+    · 编辑 %USERPROFILE%\.dsh\profiles\desktop\package.json：
+        在 dependencies 里加  "dsh-boot-anim": "link:C:/Users/你的用户名/.dsh/plugins/dsh-boot-anim"
+        在 dsh.profile.bundles 数组里加  "dsh-boot-anim"
+
+【卸载】
+  · 方式一：设置 → 开屏动画 → 面板最下方「卸载插件」→ 再点一次确认 → 重启 DSH
+  · 方式二：把 package.json.bak-boot-anim 覆盖回 package.json，重启 DSH
+  · 插件目录（约 64MB，其中 ffmpeg 61MB）可手动删除
+
+【注意事项】
+  · 仅适用于 Windows + DeepSeek Harness 桌面版（用了系统自带的华文/方正书法字体与 PowerShell）
+  · 插件依赖 DSH 的两个官方扩展点：页面注入（webserver/index-inject）与设置页插槽（settings.section）。
+    DSH 大版本升级后若改了这两处契约，插件可能需要跟着更新。
+  · 如果你改用 dsh 命令行安装（dsh plugin --profile desktop add ...），注意它会重写 profile 里的
+    bundles 列表，可能挤掉别的插件（例如 dsh-pet）——装完记得检查一遍。
+  · 素材建议：1920x1080 或竖屏 720x1280、20MB 以内、H.264 编码最稳
+    （HEVC / mkv / avi / wmv 会自动转码，会慢几秒）
+  · 「窗口控件透明」是可选进阶项：它需要修改 DSH 安装目录里的 app.asar（把窗口右上角按钮区底色改透明，
+    让画面完全铺满）。DSH 每次自动更新后需要重新点一次；不想动安装文件的可以不用。
+
+【目录说明】
+  dsh-boot-anim\            插件本体（安装脚本会复制到 %USERPROFILE%\.dsh\plugins\）
+    lib\                    代码：宿主侧 index.js、页面侧 boot.js/css/html、设置面板 client.js
+    media\                  放你自己的开屏视频/图片（当前为空 → 使用内置长开场）
+    sfx\                    音乐（自带 3 段原创合成音：国风开场 / 开天门 / 长开场）
+    tools\ffmpeg.exe        自动转码用（处理 HEVC / mkv / avi 等浏览器放不了的格式）
+    tools\asar-patch.mjs    窗口控件透明补丁脚本（面板点按钮时才用）
+    tools\还原开屏补丁.bat  万一要撤销那个补丁：把 app.asar 拖进窗口即可
+    config.jsonc            配置（面板改的就是它，也可手改）
+    README.md               更详细的功能与实现说明
+  安装.bat / 安装.ps1       一键安装脚本
+  安装说明.txt              本文件

@@ -1,0 +1,8 @@
+node_modules/
+*.log
+*.bak*
+preview-*.html
+.DS_Store
+Thumbs.db
+media/*
+!media/README.txt

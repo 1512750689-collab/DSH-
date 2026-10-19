@@ -1,0 +1,172 @@
+/* dsh-boot-anim —— 启动动画层。兜底：即使脚本完全没执行，CSS 也会在最迟 8s 后自动淡出。 */
+#dsh-boot-overlay {
+  position: fixed; inset: 0; z-index: 2147483000;
+  display: flex; align-items: center; justify-content: center;
+  background: #ffffff; color: #0f1115; overflow: hidden;
+  font-family: "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  animation: dsh-boot-out 0.55s ease 8s forwards;
+}
+body[data-ds-dark-theme] #dsh-boot-overlay { background: #151517; color: #e9ebf0; }
+@media (prefers-color-scheme: dark) {
+  #dsh-boot-overlay { background: #151517; color: #e9ebf0; }
+  body[data-ds-dark-theme="false"] #dsh-boot-overlay { background: #ffffff; color: #0f1115; }
+}
+@keyframes dsh-boot-out { to { opacity: 0; visibility: hidden; } }
+
+/* 素材层（视频 / 图片） */
+#dsh-boot-overlay .dsh-boot-media { position: absolute; inset: 0; overflow: hidden; }
+#dsh-boot-overlay .dsh-boot-media img,
+#dsh-boot-overlay .dsh-boot-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+#dsh-boot-overlay[data-fit="contain"] .dsh-boot-media img,
+#dsh-boot-overlay[data-fit="contain"] .dsh-boot-media video { object-fit: contain; }
+#dsh-boot-overlay .dsh-boot-veil {
+  position: absolute; inset: 0; opacity: 1;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.26) 52%, rgba(0, 0, 0, 0.58) 100%);
+}
+#dsh-boot-overlay.has-media .dsh-boot-veil { opacity: 1; }
+#dsh-boot-overlay.no-veil .dsh-boot-veil { opacity: 0; }
+#dsh-boot-overlay:not(.has-media) .dsh-boot-veil { opacity: 0; }
+
+#dsh-boot-overlay.has-media { background: #0b0d12; color: #fff; }
+#dsh-boot-overlay.has-media .dsh-boot-stage { display: none; }
+#dsh-boot-overlay.has-media .dsh-boot-title { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45); }
+#dsh-boot-overlay.has-media .dsh-boot-sub { color: rgba(255, 255, 255, 0.74); text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4); }
+#dsh-boot-overlay.has-media .dsh-boot-track { background: rgba(255, 255, 255, 0.24); }
+
+/* 内容层 */
+#dsh-boot-overlay .dsh-boot-content {
+  position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center;
+  padding: 32px 48px; border-radius: 24px;
+}
+#dsh-boot-overlay .dsh-boot-stage { position: relative; width: 76px; height: 76px; display: grid; place-items: center; }
+#dsh-boot-overlay .dsh-boot-mark {
+  position: relative; width: 76px; height: 76px; border-radius: 24px;
+  display: grid; place-items: center;
+  background: linear-gradient(140deg, #4d93f8, #7aa8ff 55%, #5bc8c0);
+  color: #fff; font-size: 26px; font-weight: 600; letter-spacing: 0.02em;
+  box-shadow: 0 18px 44px rgba(65, 118, 230, 0.34);
+  opacity: 0; transform: scale(0.86) translateY(6px);
+  animation: dsh-boot-mark 1.05s cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+  animation-play-state: paused;
+}
+@keyframes dsh-boot-mark { to { opacity: 1; transform: scale(1) translateY(0); } }
+#dsh-boot-overlay .dsh-boot-halo {
+  position: absolute; inset: 0; border-radius: 28px;
+  border: 1.5px solid rgba(77, 147, 248, 0.5);
+  opacity: 0; animation: dsh-boot-halo 1.9s ease-out 0.25s 2; animation-play-state: paused;
+}
+#dsh-boot-overlay .dsh-boot-halo--b { animation-delay: 0.85s; }
+@keyframes dsh-boot-halo { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(2.05); opacity: 0; } }
+
+#dsh-boot-overlay .dsh-boot-title {
+  margin-top: 26px; font-size: var(--dsh-boot-title-size, 15px); font-weight: 500; font-family: var(--dsh-boot-title-font, inherit); color: var(--dsh-boot-title-color, inherit);
+  letter-spacing: 0.34em; text-indent: 0.34em; opacity: 0; transform: translateY(6px);
+  animation: dsh-boot-title 1.1s cubic-bezier(0.2, 0.9, 0.25, 1) 0.18s forwards; animation-play-state: paused;
+}
+#dsh-boot-overlay.has-media .dsh-boot-title { margin-top: 0; font-size: var(--dsh-boot-title-size, 17px); }
+@keyframes dsh-boot-title { to { opacity: 1; transform: translateY(0); letter-spacing: 0.12em; text-indent: 0.12em; } }
+
+#dsh-boot-overlay .dsh-boot-sub {
+  margin-top: 10px; font-size: var(--dsh-boot-sub-size, 12.5px); opacity: 0; color: rgba(15, 17, 21, 0.45);
+  animation: dsh-boot-fade 0.8s ease 0.55s forwards; animation-play-state: paused;
+}
+body[data-ds-dark-theme] #dsh-boot-overlay .dsh-boot-sub { color: rgba(233, 235, 240, 0.5); }
+@media (prefers-color-scheme: dark) { #dsh-boot-overlay .dsh-boot-sub { color: rgba(233, 235, 240, 0.5); } }
+@keyframes dsh-boot-fade { to { opacity: 1; } }
+
+#dsh-boot-overlay .dsh-boot-track {
+  margin-top: 28px; width: 188px; height: 3px; border-radius: 99px;
+  background: rgba(127, 133, 145, 0.22); overflow: hidden; opacity: 0;
+  animation: dsh-boot-fade 0.6s ease 0.3s forwards; animation-play-state: paused;
+}
+#dsh-boot-overlay .dsh-boot-fill {
+  width: 8%; height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #4d93f8, #5bc8c0);
+  animation: dsh-boot-fill 1.5s cubic-bezier(0.3, 0.8, 0.3, 1) 0.2s forwards; animation-play-state: paused;
+}
+@keyframes dsh-boot-fill { to { width: 92%; } }
+
+#dsh-boot-overlay .dsh-boot-hint {
+  position: absolute; bottom: 54px; left: 0; right: 0; z-index: 3;
+  text-align: center; font-size: 12.5px; color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.08em; animation: dsh-boot-breathe 1.9s ease-in-out infinite;
+}
+body:not([data-ds-dark-theme]) #dsh-boot-overlay:not(.has-media) .dsh-boot-hint { color: rgba(15, 17, 21, 0.5); }
+@keyframes dsh-boot-breathe { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.95; } }
+
+#dsh-boot-overlay .dsh-boot-sfx {
+  position: absolute; bottom: 18px; right: 20px; z-index: 3;
+  font-size: 12px; color: rgba(255, 255, 255, 0.78);
+  background: rgba(0, 0, 0, 0.42); border-radius: 999px; padding: 6px 12px;
+  backdrop-filter: blur(6px);
+}
+
+#dsh-boot-overlay.dsh-boot-run .dsh-boot-mark,
+#dsh-boot-overlay.dsh-boot-run .dsh-boot-halo,
+#dsh-boot-overlay.dsh-boot-run .dsh-boot-title,
+#dsh-boot-overlay.dsh-boot-run .dsh-boot-sub,
+#dsh-boot-overlay.dsh-boot-run .dsh-boot-track,
+#dsh-boot-overlay.dsh-boot-run .dsh-boot-fill { animation-play-state: running; }
+
+@media (prefers-reduced-motion: reduce) {
+  #dsh-boot-overlay .dsh-boot-mark,
+  #dsh-boot-overlay .dsh-boot-halo,
+  #dsh-boot-overlay .dsh-boot-title,
+  #dsh-boot-overlay .dsh-boot-sub,
+  #dsh-boot-overlay .dsh-boot-track,
+  #dsh-boot-overlay .dsh-boot-fill,
+  #dsh-boot-overlay .dsh-boot-hint { animation-duration: 0.001s; }
+}
+/* ===== 画面铺满方式 ===== */
+#dsh-boot-overlay .dsh-boot-media img,
+#dsh-boot-overlay .dsh-boot-media video { object-position: var(--dsh-boot-object-position, center center); }
+
+/* blur：模糊放大层铺满，前景按原比例完整显示 —— 既无黑边也不裁画面 */
+#dsh-boot-overlay[data-fit="blur"] .dsh-boot-media { background: #000; }
+#dsh-boot-overlay[data-fit="blur"] .dsh-boot-media-blur {
+  position: absolute; left: -6%; top: -6%; width: 112%; height: 112%;
+  object-fit: cover; object-position: center center;
+  background-size: cover; background-position: center center;
+  filter: blur(26px) brightness(0.6) saturate(1.15);
+  transform: translateZ(0); z-index: 0;
+}
+#dsh-boot-overlay[data-fit="blur"] .dsh-boot-media-main {
+  position: relative; z-index: 1; object-fit: contain;
+}
+
+
+/* ===== v2.0：纯色兜底 + 第三层闪烁 ===== */
+#dsh-boot-overlay[data-style="plain"] { background: radial-gradient(120% 90% at 50% 38%, #0b1626 0%, #05070d 72%); color: #eaf6ff; }
+#dsh-boot-overlay[data-style="plain"] .dsh-boot-sub { color: rgba(234,246,255,.62); }
+#dsh-boot-overlay[data-style="plain"] .dsh-boot-hint { color: rgba(234,246,255,.72); }
+#dsh-boot-overlay[data-style="plain"] .dsh-boot-veil { display: none; }
+#dsh-boot-overlay[data-style="plain"] .dsh-boot-content { z-index: 2; }
+
+#dsh-boot-overlay .dsh-boot-flash-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+#dsh-boot-overlay .dsh-boot-flash-layer .flash-edge { position: absolute; inset: 0; opacity: 0; mix-blend-mode: screen;
+  background: radial-gradient(circle at 50% 50%, transparent 36%, color-mix(in srgb, var(--flash-color) 58%, transparent) 100%); }
+#dsh-boot-overlay .dsh-boot-flash-layer.is-pulsing .flash-edge { animation: dsh-flash-breathe var(--flash-speed, 4.5s) ease-in-out infinite; }
+#dsh-boot-overlay .dsh-boot-flash-layer .flash-core { position: absolute; inset: -12%; opacity: 0; mix-blend-mode: normal;
+  background: radial-gradient(circle at 50% 50%, var(--flash-color) 0%, color-mix(in srgb, var(--flash-color) 72%, transparent) 18%, transparent 64%); }
+#dsh-boot-overlay .dsh-boot-flash-layer .flash-sweep { position: absolute; left: -5%; right: -5%; top: 0; height: 2px; opacity: 0; mix-blend-mode: screen; background: linear-gradient(90deg, transparent, var(--flash-color), transparent); box-shadow: 0 0 18px var(--flash-color); }
+#dsh-boot-overlay .dsh-boot-flash-layer.is-firing .flash-sweep { animation: dsh-flash-sweep var(--flash-duration, 900ms) cubic-bezier(.3,.7,.2,1) both; }
+#dsh-boot-overlay .dsh-boot-flash-layer .flash-ring { position: absolute; left: 50%; top: 50%; width: 18vmax; height: 18vmax; margin: -9vmax 0 0 -9vmax;
+  border: 1px solid var(--flash-color); border-radius: 50%; opacity: 0; box-shadow: 0 0 26px color-mix(in srgb, var(--flash-color) 40%, transparent); }
+#dsh-boot-overlay .dsh-boot-flash-layer.is-firing .flash-core { animation: dsh-flash-core var(--flash-duration, 900ms) cubic-bezier(.2,.7,.2,1) both; }
+#dsh-boot-overlay .dsh-boot-flash-layer.is-firing.is-soft .flash-core { animation-name: dsh-flash-core-soft; }
+#dsh-boot-overlay .dsh-boot-flash-layer.is-firing.is-soft .flash-ring,
+#dsh-boot-overlay .dsh-boot-flash-layer.is-firing.is-soft .flash-sweep { display: none; }
+#dsh-boot-overlay .dsh-boot-flash-layer.is-firing .flash-ring { animation: dsh-flash-ring calc(var(--flash-duration, 900ms) * 1.1) cubic-bezier(.2,.7,.2,1) both; }
+@keyframes dsh-flash-breathe { 0%, 100% { opacity: calc(var(--flash-pulse, .16) * .45); } 50% { opacity: var(--flash-pulse, .16); } }
+@keyframes dsh-flash-core { 0% { opacity: 0; transform: scale(.9); } 18% { opacity: var(--flash-alpha, .78); transform: scale(1); } 55% { opacity: calc(var(--flash-alpha, .78) * .55); transform: scale(1.04); } 100% { opacity: 0; transform: scale(1.12); } }
+@keyframes dsh-flash-core-soft { 0% { opacity: 0; transform: scale(.94); } 20% { opacity: calc(var(--flash-alpha, .78) * .28); transform: scale(1); } 100% { opacity: 0; transform: scale(1.06); } }
+@keyframes dsh-flash-sweep { 0% { opacity: 0; transform: translateY(-12vh); } 12% { opacity: calc(var(--flash-alpha, .78) * .85); } 100% { opacity: 0; transform: translateY(112vh); } }
+@keyframes dsh-flash-ring { 0% { opacity: 0; transform: scale(.35); } 20% { opacity: calc(var(--flash-alpha, .78) * .8); } 100% { opacity: 0; transform: scale(1.6); } }
+@media (prefers-reduced-motion: reduce) {
+  #dsh-boot-overlay .dsh-boot-flash-layer.is-pulsing .flash-edge,
+  #dsh-boot-overlay .dsh-boot-flash-layer.is-firing .flash-core,
+  #dsh-boot-overlay .dsh-boot-flash-layer.is-firing .flash-ring,
+  #dsh-boot-overlay .dsh-boot-flash-layer.is-firing .flash-sweep { animation-duration: .001s !important; }
+}
+

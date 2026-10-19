@@ -1,0 +1,4 @@
+# dsh-boot-anim 的挂载声明：把启动动画插件挂进 DSH 配置树
+- insert:
+    - id: dsh-boot-anim
+      name: 'dsh-boot-anim'

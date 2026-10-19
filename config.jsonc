@@ -1,0 +1,54 @@
+{
+  // ============ dsh-boot-anim 配置（设置在 DSH 的 设置 → 开屏动画 里，也可手改这里）============
+
+  "enabled": true,
+
+  // v2.0：只使用 media 目录里的自定义视频/图片；内置三套动画已移除
+  "style": "custom",
+
+  // ---- 动画素材 ----
+  "media": "auto",
+  "fit": "cover",
+  "mediaPosition": "center",
+  "veil": "auto",
+  "loop": true,
+  "mediaStartMs": 0,
+  "mediaDurationMs": 0,
+  "mediaMuted": true,
+  "titleDelayMs": 6000,
+
+  // ---- 开屏时长与交互 ----
+  "minDurationMs": 18000,
+  "skippable": true,
+  "waitForInput": false,
+  "hint": "按任意键跳过",
+  "autoEnterMs": 12000,
+
+  // ---- 第三层 · 闪烁（v2.0）----
+  "flashEnabled": true,
+  "flashColor": "#dff8ff",
+  "flashIntensity": 78,
+  "flashDurationMs": 900,
+  "flashAt": "both",
+  "flashPulse": true,
+  "flashPulseIntensity": 16,
+  "flashPulseSpeed": 4.5,
+  "flashRing": true,
+
+  "waitForMediaEnd": true,
+
+  // ---- 落款文字与字体 ----
+  "title": "DeepSeek Harness",
+  "subtitle": "正在准备工作区…",
+  "titleFont": "华文新魏",
+  "titleColor": "",
+  "titleFontSize": 0,
+  "subtitleFontSize": 0,
+
+  // ---- 音乐 ----
+  "sfx": "auto",
+  "sfxVolume": 0.7,
+  "sfxStartMs": 0,
+  "sfxDurationMs": 0,
+  "sfxFadeOutMs": 600
+}
